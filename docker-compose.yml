@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  hello-node:
+    image: hello-node
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    restart: unless-stopped
+
+  hello-fyi:
+    build: .
+    ports:
+      - "3100:3000"
+    environment:
+      - PORT=3000
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - hello-node
+    restart: unless-stopped
